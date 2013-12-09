@@ -98,7 +98,7 @@ catC = go
     However if you 'wrap' the upstream pipeline then you CL.take is notified
     when up stremam has shutdown the ouput is:
 
-    >runEffect  $ wrap (each [1..9]) >-> conduitEx1 >-> P.print
+    >runEffect  $ wrap (each [1..9]) >-> takePairs >-> P.print
     [1,2]
     [3,4]
     [5,6]
