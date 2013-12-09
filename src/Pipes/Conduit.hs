@@ -95,7 +95,7 @@ catC = go
     [5,6]
     [7,8]
 
-    However if you 'wrape' the upstream pipeline then you CL.take is notified
+    However if you 'wrap' the upstream pipeline then you CL.take is notified
     when up stremam has shutdown the ouput is:
 
     >runEffect  $ wrap (each [1..9]) >-> conduitEx1 >-> P.print
@@ -105,7 +105,7 @@ catC = go
     [7,8]
     [9]
 
-    Just like in the conduit:
+    Just like in conduit:
 
     > CL.sourceList [1..9] C.$= CL.sequence (CL.take 2) 
                            C.$$ CL.mapM_ (liftIO . print)
@@ -123,3 +123,11 @@ wrap
 wrap p = do
     p >-> P.map Just
     forever $ yield Nothing
+
+
+pipeProducerToConduit
+  :: Monad m => Producer a m () 
+             -> C.Producer m a
+pipeProducerToConduit p = 
+    runEffect $ wrap (hoist lift p)  
+        >-> awaitPipeLiftYieldConduit
